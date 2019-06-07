@@ -25,7 +25,6 @@ class Form extends Component{
   handleLogIn(event){
     event.preventDefault()
     this.props.handleLogIn(this.state.username, this.state.password)
-    this.clearForm()
   }
   clearForm(){
     this.setState({

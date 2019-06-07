@@ -53,10 +53,9 @@ class UserForm extends Component {
 
     //Call the correct function here!
     if(this.state.formType === "logIn"){
-      // this.props.HANDLELOGIN(this.state.formData);
-      console.log("logIn");
+      this.props.handleLogIn(this.state.formData);
     } else if (this.state.formType === "createUser") {
-      // this.props.HANDLECREATEUSER(this.state.formData);
+      this.props.handleCreateUser(this.state.formData);
       console.log("createUser");
     } else if (this.state.formType === "editUser") {
       // this.props.HANDLEEDITUSER(this.state.formData);
