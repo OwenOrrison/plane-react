@@ -24,23 +24,47 @@ class UserForm extends Component {
 
   //Change the form values
   handleChange(e) {
-    this.setState({formData[e.target.name]: e.target.value});
+
+    let whichInput = e.target.name;
+    let newValue = e.target.value;
+
+    this.setState( (prevState) => {
+      return {
+        formData: Object.assign(
+          {},
+          prevState.formData,
+          {[whichInput]: newValue}
+        )
+      }
+    })
   }
+
+  // this.setState({
+  //   formData: Object.assign(
+  //     {},
+  //     this.state.formData,
+  //     {[e.target.name]: e.target.value}
+  //   )
+  // })
 
   //Have this call the correct function in App to login/create/edit
   handleSubmit(e) {
     e.preventDefault();
 
     //Call the correct function here!
-    if(formType === "logIn"){
+    if(this.state.formType === "logIn"){
       // this.props.HANDLELOGIN(this.state.formData);
-    } else if (formType === "createUser") {
+      console.log("logIn");
+    } else if (this.state.formType === "createUser") {
       // this.props.HANDLECREATEUSER(this.state.formData);
-    } else if (formType === "editUser") {
+      console.log("createUser");
+    } else if (this.state.formType === "editUser") {
       // this.props.HANDLEEDITUSER(this.state.formData);
+      console.log("editUser");
     }
 
     this.clearForm();
+    this.setFormDisplay(false);
   }
 
   clearForm() {
@@ -53,28 +77,39 @@ class UserForm extends Component {
   }
 
   swapForm(newForm = "") {
-    if(newForm != this.state.formType) {
+    if(newForm !== this.state.formType) {
       this.setState({formType: newForm});
       this.clearForm();
     }
   }
 
-  //
+  //Set whether the form should be displayed or not
   setFormDisplay(newFormState) {
-
+    if(newFormState !== this.state.displayForm) {
+      this.setState({displayForm: newFormState});
+      this.clearForm();
+    }
   }
 
   render() {
+    let submitButtonText = "BUTTON TEXT UNASSIGNED";
+    if(this.state.formType === "logIn") {
+      submitButtonText = "Log In";
+    } else if (this.state.formType === "createUser") {
+      submitButtonText = "Create Account";
+    } else if (this.state.formType === "editUser") {
+      submitButtonText = "Edit Details";
+    }
     return (
       <div>
-        <button onClick={this.swapForm("logIn")}> Log In </button>
-        <button onClick={this.swapForm("createUser")}> Create New Account </button>
-        <button onClick={this.swapForm("editUser")}> (show only if logged in) Edit Account Details </button>
-        <div className="form">
+        <button onClick={() => {this.swapForm("logIn")}}> (show only if not logged in) Log In </button>
+        <button onClick={() => {this.swapForm("createUser")}}> (show only if not logged in) Create New Account </button>
+        <button onClick={() => {this.swapForm("editUser"); this.setFormDisplay(true)}}> (show only if logged in) Edit Account Details </button>
+        <div>
           <form onSubmit={this.handleSubmit}>
             <input type='text' value={this.state.formData.username} onChange={this.handleChange} name="username"/>
-            <input type='text' value={this.state.formData.username} onChange={this.handleChange} name="password"/>
-            <button type="submit" className="submit-button"><i className="fas fa-plus"></i></button>
+            <input type='text' value={this.state.formData.password} onChange={this.handleChange} name="password"/>
+            <button type="submit">{submitButtonText}</button>
           </form>
         </div>
       </div>
