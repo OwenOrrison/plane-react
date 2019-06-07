@@ -10,16 +10,22 @@ class App extends Component {
     super(props)
 
     this.handleLogIn = this.handleLogIn.bind(this);
+    this.handleCreateUser = this.handleCreateUser.bind(this);
+    this.handleEditUser = this.handleEditUser.bind(this);
 
     this.state={
       isLoggedIn:false,
       planeArray:[],
-      userData: ''
+      loggedUserInfo: {
+        username: "",
+        userDatabaseID: null
+      }
     }
   }
 
   handleLogIn(userData){
     console.log(userData);
+    console.log(this.state);
     fetch(`http://localhost:3000/users/logIn`, {
       body: JSON.stringify(userData),
       method: "POST",
@@ -31,7 +37,21 @@ class App extends Component {
 		.then(data => {
       return data.json();
     }).then(jData => {
-      console.log(jData);
+      if(jData !== null) {
+        this.setState( (prevState) => {
+          return {
+            isLoggedIn:true,
+            loggedUserInfo: {
+              username: jData.username,
+              userDatabaseID: jData.id
+            }
+          }
+        })
+        console.log("LOGGED IN");
+      } else {
+        console.log("INVALID CREDENTIALS");
+      }
+
     })
   }
 
@@ -52,12 +72,34 @@ class App extends Component {
     })
   }
 
+  handleEditUser(userData){
+    console.log(userData);
+    console.log(this.state);
+    console.log(this.state.loggedUserInfo.userDatabaseID);
+    fetch(`http://localhost:3000/users/${this.state.loggedUserInfo.userDatabaseID}`, {
+      body: JSON.stringify(userData),
+      method: "PUT",
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(data => {
+      return data.json();
+    }).then(jData => {
+      console.log(jData);
+    })
+  }
+
 
 
   render(){
       return (
         <div>
-          <UserForm handleLogIn={this.handleLogIn} handleCreateUser={this.handleCreateUser}/>
+          <UserForm handleLogIn={this.handleLogIn} handleCreateUser={this.handleCreateUser}
+          handleEditUser={this.handleEditUser}
+          isLoggedIn={this.state.isLoggedIn}
+          loggedUserInfo={this.state.loggedUserInfo}/>
           <div>
           <OurMap />
           </div>

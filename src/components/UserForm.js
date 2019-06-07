@@ -58,7 +58,7 @@ class UserForm extends Component {
       this.props.handleCreateUser(this.state.formData);
       console.log("createUser");
     } else if (this.state.formType === "editUser") {
-      // this.props.HANDLEEDITUSER(this.state.formData);
+      this.props.handleEditUser(this.state.formData);
       console.log("editUser");
     }
 
@@ -80,6 +80,7 @@ class UserForm extends Component {
       this.setState({formType: newForm});
       this.clearForm();
     }
+    this.setFormDisplay(true);
   }
 
   //Set whether the form should be displayed or not
@@ -101,16 +102,26 @@ class UserForm extends Component {
     }
     return (
       <div>
-        <button onClick={() => {this.swapForm("logIn")}}> (show only if not logged in) Log In </button>
-        <button onClick={() => {this.swapForm("createUser")}}> (show only if not logged in) Create New Account </button>
-        <button onClick={() => {this.swapForm("editUser"); this.setFormDisplay(true)}}> (show only if logged in) Edit Account Details </button>
+
+        <div className="nav">
+        {this.props.isLoggedIn ?
+          <button onClick={() => {this.swapForm("editUser"); this.setFormDisplay(true)}}> Edit Account Details </button>
+          :
+          <div>
+          <button onClick={() => {this.swapForm("logIn")}}> Log In </button>
+          <button onClick={() => {this.swapForm("createUser")}}>  Create New Account </button>
+          </div>
+        }
+        </div>
+
+      {this.state.displayForm ?
         <div>
           <form onSubmit={this.handleSubmit}>
             <input type='text' value={this.state.formData.username} onChange={this.handleChange} name="username"/>
             <input type='text' value={this.state.formData.password} onChange={this.handleChange} name="password"/>
             <button type="submit">{submitButtonText}</button>
           </form>
-        </div>
+        </div> : "" }
       </div>
     );
   };
