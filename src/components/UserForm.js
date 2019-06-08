@@ -7,13 +7,14 @@ class UserForm extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.swapForm = this.swapForm.bind(this);
     this.clearForm = this.clearForm.bind(this);
-    this.setFormDisplay = this.setFormDisplay.bind(this);
+    this.setDisplayType = this.setDisplayType.bind(this);
+    this.handleButtonClick = this.handleButtonClick.bind(this);
 
     this.state = {
       displayForm: true,
-      formType: "logIn", //"logIn", "createUser", or "editUser"
+      displayButton: false,
+      formType: "logIn", //"logIn", "createUser", "editUser", or "deleteUser"
       formData: {
         username: "",
         password: ""
@@ -39,14 +40,6 @@ class UserForm extends Component {
     })
   }
 
-  // this.setState({
-  //   formData: Object.assign(
-  //     {},
-  //     this.state.formData,
-  //     {[e.target.name]: e.target.value}
-  //   )
-  // })
-
   //Have this call the correct function in App to login/create/edit
   handleSubmit(e) {
     e.preventDefault();
@@ -63,7 +56,11 @@ class UserForm extends Component {
     }
 
     this.clearForm();
-    this.setFormDisplay(false);
+    this.setDisplayType(false, false);
+  }
+
+  handleButtonClick(e) {
+
   }
 
   clearForm() {
@@ -75,20 +72,14 @@ class UserForm extends Component {
     });
   }
 
-  swapForm(newForm = "") {
-    if(newForm !== this.state.formType) {
-      this.setState({formType: newForm});
-      this.clearForm();
-    }
-    this.setFormDisplay(true);
-  }
-
   //Set whether the form should be displayed or not
-  setFormDisplay(newFormState) {
-    if(newFormState !== this.state.displayForm) {
-      this.setState({displayForm: newFormState});
-      this.clearForm();
-    }
+  setDisplayType(whichForm, newFormState, newButtonState) {
+    this.setState({
+      formType: whichForm,
+      displayForm: newFormState,
+      displayButton: newButtonState
+    });
+    this.clearForm();
   }
 
   render() {
@@ -99,17 +90,26 @@ class UserForm extends Component {
       submitButtonText = "Create Account";
     } else if (this.state.formType === "editUser") {
       submitButtonText = "Edit Details";
+    } else if (this.state.formType === "deleteUser") {
+      submitButtonText = "CONFIRM DELETE ACCOUNT";
+    } else if (this.state.formType === "logOut") {
+      submitButtonText = "Confirm log out";
     }
+
+
     return (
       <div>
 
         <div className="nav">
         {this.props.isLoggedIn ?
-          <button onClick={() => {this.swapForm("editUser"); this.setFormDisplay(true)}}> Edit Account Details </button>
+          <div>
+          <button onClick={() => {this.setDisplayType("editUser", true, false)}}> Edit Account Details </button>
+          <button onClick={() => {this.setDisplayType("deleteUser", false, true)}}> Delete User Account </button>
+          </div>
           :
           <div>
-          <button onClick={() => {this.swapForm("logIn")}}> Log In </button>
-          <button onClick={() => {this.swapForm("createUser")}}>  Create New Account </button>
+          <button onClick={() => {this.setDisplayType("logIn", true, false)}}> Log In </button>
+          <button onClick={() => {this.setDisplayType("createUser", true, false)}}>  Create New Account </button>
           </div>
         }
         </div>
@@ -122,6 +122,9 @@ class UserForm extends Component {
             <button type="submit">{submitButtonText}</button>
           </form>
         </div> : "" }
+        {this.state.displayButton ?
+          <button onClick={()=>{this.handleButtonClick()}}> {submitButtonText} </button>
+           : "" }
       </div>
     );
   };
