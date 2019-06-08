@@ -19,14 +19,12 @@ class App extends Component {
   }
   handlePlaneArray(planes){
     let newArray=[]
-    console.log(planes);
     planes.forEach((planes) =>{
       newArray.push(planes)
     })
     this.setState({
       planeArray: newArray
     })
-    console.log(this.state.planeArray);
   }
 
   handleAPICall(){
