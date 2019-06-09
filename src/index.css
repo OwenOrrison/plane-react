@@ -11,3 +11,24 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.userMenu{
+  height: 5em;
+}
+
+.nav {
+  text-align: center;
+}
+
+.mainForm {
+  text-align: center;
+}
+
+.navButton{
+  border: 2px solid black;
+  border-radius: 2px;
+  background-color: lightgrey;
+}
+.navButton:hover{
+  background-color: darkgrey;
+}

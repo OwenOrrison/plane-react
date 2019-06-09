@@ -106,34 +106,35 @@ class UserForm extends Component {
 
 
     return (
-      <div>
+      <div className="userMenu">
 
         <div className="nav">
         {this.props.isLoggedIn ?
           <div>
-          <button onClick={() => {this.setDisplayType("editUser", true, false)}}> Edit Account Details </button>
-          <button onClick={() => {this.setDisplayType("deleteUser", false, true)}}> Delete User Account </button>
-          <button onClick={() => {this.setDisplayType("logOut", false, true)}}> Log Out </button>
+          <button className="navButton" onClick={() => {this.setDisplayType("editUser", true, false)}}> Edit Account Details </button>
+          <button className="navButton" onClick={() => {this.setDisplayType("deleteUser", false, true)}}> Delete User Account </button>
+          <button className="navButton" onClick={() => {this.setDisplayType("logOut", false, true)}}> Log Out </button>
           </div>
           :
           <div>
-          <button onClick={() => {this.setDisplayType("logIn", true, false)}}> Log In </button>
-          <button onClick={() => {this.setDisplayType("createUser", true, false)}}>  Create New Account </button>
+          <button className="navButton" onClick={() => {this.setDisplayType("logIn", true, false)}}> Log In </button>
+          <button className="navButton" onClick={() => {this.setDisplayType("createUser", true, false)}}>  Create New Account </button>
           </div>
         }
         </div>
 
-      {this.state.displayForm ?
-        <div>
-          <form onSubmit={this.handleSubmit}>
-            <input type='text' value={this.state.formData.username} onChange={this.handleChange} name="username"/>
-            <input type='text' value={this.state.formData.password} onChange={this.handleChange} name="password"/>
-            <button type="submit">{submitButtonText}</button>
-          </form>
-        </div> : "" }
-        {this.state.displayButton ?
-          <button onClick={()=>{this.handleButtonClick()}}> {submitButtonText} </button>
+        <div className="mainForm">
+          {this.state.displayForm ?
+            <form onSubmit={this.handleSubmit}>
+              <input type='text' value={this.state.formData.username} onChange={this.handleChange} name="username" placeholder="Username"/> <br/>
+              <input type='text' value={this.state.formData.password} onChange={this.handleChange} name="password" placeholder="Password"/> <br/>
+              <button type="submit">{submitButtonText}</button>
+            </form>
+          : "" }
+            {this.state.displayButton ?
+              <button className="navButton" onClick={()=>{this.handleButtonClick()}}> {submitButtonText} </button>
            : "" }
+         </div>
       </div>
     );
   };
