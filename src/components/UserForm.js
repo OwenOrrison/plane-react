@@ -14,7 +14,7 @@ class UserForm extends Component {
     this.state = {
       displayForm: true,
       displayButton: false,
-      formType: "logIn", //"logIn", "createUser", "editUser", or "deleteUser"
+      formType: "logIn", //"logIn", "createUser", "editUser", "deleteUser", or "logOut"
       formData: {
         username: "",
         password: ""
@@ -40,7 +40,7 @@ class UserForm extends Component {
     })
   }
 
-  //Have this call the correct function in App to login/create/edit
+  //Calls the function in App to login/create/edit
   handleSubmit(e) {
     e.preventDefault();
 
@@ -59,8 +59,16 @@ class UserForm extends Component {
     this.setDisplayType(false, false);
   }
 
+  //Calls the function in App to delete/logout
   handleButtonClick(e) {
-
+    if(this.state.formType === "deleteUser"){
+      console.log("deleteUser");
+      this.props.handleDeleteUser();
+    } else if (this.state.formType === "logOut") {
+      console.log("logOut");
+      this.props.handleLogOut();
+    }
+    this.setDisplayType(false, false);
   }
 
   clearForm() {
@@ -105,6 +113,7 @@ class UserForm extends Component {
           <div>
           <button onClick={() => {this.setDisplayType("editUser", true, false)}}> Edit Account Details </button>
           <button onClick={() => {this.setDisplayType("deleteUser", false, true)}}> Delete User Account </button>
+          <button onClick={() => {this.setDisplayType("logOut", false, true)}}> Log Out </button>
           </div>
           :
           <div>

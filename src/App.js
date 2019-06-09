@@ -10,8 +10,11 @@ class App extends Component {
     super(props)
 
     this.handleLogIn = this.handleLogIn.bind(this);
+    this.handleLogOut = this.handleLogOut.bind(this);
     this.handleCreateUser = this.handleCreateUser.bind(this);
+    this.handleDeleteUser  =this.handleDeleteUser.bind(this);
     this.handleEditUser = this.handleEditUser.bind(this);
+
 
     this.state={
       isLoggedIn:false,
@@ -51,7 +54,18 @@ class App extends Component {
       } else {
         console.log("INVALID CREDENTIALS");
       }
+    })
+  }
 
+  handleLogOut() {
+    this.setState( (prevState) => {
+      return {
+        isLoggedIn:false,
+        loggedUserInfo: {
+          username: "",
+          userDatabaseID: null
+        }
+      }
     })
   }
 
@@ -69,6 +83,22 @@ class App extends Component {
       return data.json();
     }).then(jData => {
       console.log(jData);
+    })
+  }
+
+  handleDeleteUser(){
+    fetch(`http://localhost:3000/users/${this.state.loggedUserInfo.userDatabaseID}`, {
+      method: "DELETE",
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(data => {
+      return data.json();
+    }).then(jData => {
+      console.log(jData);
+      this.handleLogOut();
     })
   }
 
@@ -96,7 +126,10 @@ class App extends Component {
   render(){
       return (
         <div>
-          <UserForm handleLogIn={this.handleLogIn} handleCreateUser={this.handleCreateUser}
+          <UserForm handleLogIn={this.handleLogIn}
+          handleLogOut={this.handleLogOut}
+          handleCreateUser={this.handleCreateUser}
+          handleDeleteUser={this.handleDeleteUser}
           handleEditUser={this.handleEditUser}
           isLoggedIn={this.state.isLoggedIn}
           loggedUserInfo={this.state.loggedUserInfo}/>
