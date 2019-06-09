@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import OurMap from './components/OurMap.js';
-import Form from './components/Form.js'
+// import Form from './components/Form.js'
 import UserForm from './components/UserForm.js'
 import './App.css';
 
@@ -22,7 +22,8 @@ class App extends Component {
       planeArray:[],
       loggedUserInfo: {
         username: "",
-        userDatabaseID: null
+        userDatabaseID: null,
+        myPlanes: [] //make sure that we add planes back on log in.
       }
     }
     this.handleAPICall=this.handleAPICall.bind(this)
@@ -156,6 +157,7 @@ class App extends Component {
           <div>
           <OurMap
           planeArray={this.state.planeArray}
+          userInfo={this.state.loggedUserInfo}
           />
           </div>
         </div>
