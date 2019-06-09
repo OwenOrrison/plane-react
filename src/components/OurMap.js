@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import{ Map, TileLayer, Marker} from 'react-leaflet';
+import{ Map, TileLayer, Marker, Popup} from 'react-leaflet';
 import L from 'leaflet'
 import '../App.css';
 import airplaneIcon from '../airplane-shape.svg'
@@ -40,7 +40,10 @@ class OurMap extends Component {
               key={plane}
               position={[plane[6],plane[5]]}
               icon={myIcon}
-            />
+            >
+              <Popup>
+              </Popup>
+            </Marker>
           ))}
 
         </Map>
