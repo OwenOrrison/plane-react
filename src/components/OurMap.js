@@ -3,6 +3,8 @@ import{ Map, TileLayer, Marker, Popup, Tooltip} from 'react-leaflet';
 import L from 'leaflet'
 import '../App.css';
 import airplaneIcon from '../airplane-shape.svg'
+import airplaneBlue from '../Airplane_GA_Blue.svg'
+import airplaneRed from '../Airplane_GA_Red.svg'
 
 // const mapBoxTiles = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 // const mapBoxAttr = "&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors";
@@ -10,11 +12,25 @@ import airplaneIcon from '../airplane-shape.svg'
 // const zoomLevel = 13;
 // const id = 'mapid'
 
-const myIcon= L.icon({
-  iconUrl:airplaneIcon,
-  iconSize:[25,41],
-  iconAnchor: [12.5,41],
-  popupAnchor:[0, -41]
+const blackIcon = L.icon({
+  iconUrl: airplaneIcon,
+  iconSize:[20,20],
+  iconAnchor: [10,20],
+  popupAnchor:[0, -20]
+})
+
+const blueIcon = L.icon({
+  iconUrl: airplaneBlue,
+  iconSize:[20,20],
+  iconAnchor: [10,20],
+  popupAnchor:[0, -20]
+})
+
+const redIcon = L.icon({
+  iconUrl: airplaneRed,
+  iconSize:[20,20],
+  iconAnchor: [10,20],
+  popupAnchor:[0, -20]
 })
 
 class OurMap extends Component {
@@ -64,7 +80,7 @@ class OurMap extends Component {
             <Marker
               key={plane}
               position={[plane[6],plane[5]]}
-              icon={myIcon}
+              icon={blackIcon}
             >
             {this.props.userInfo.usersPlanesIds.length > 0 ?
             <Tooltip direction="bottom" >
