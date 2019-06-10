@@ -23,12 +23,21 @@ class App extends Component {
       loggedUserInfo: {
         username: "",
         userDatabaseID: null,
-        myPlanes: [] //make sure that we add planes back on log in.
+        usersPlanesIds: [], //make sure that we add planes back on log in.
+        myPlanesData: []
       }
     }
     this.handleAPICall=this.handleAPICall.bind(this)
     this.componentDidMount=this.componentDidMount.bind(this)
     this.handlePlaneArray=this.handlePlaneArray.bind(this)
+
+    //TESTING ZONE
+
+    this.callOpenSkyAPI = this.callOpenSkyAPI.bind(this);
+    this.parallelAPIs = this.parallelAPIs.bind(this);
+    this.callBackendAPI = this.callBackendAPI.bind(this);
+
+    //END TESTING ZONE
   }
   handlePlaneArray(planes){
     let newArray=[]
@@ -47,9 +56,106 @@ class App extends Component {
     this.handleAPICall()
   }
 
+  //TESTING ZONE
+  //THIS WORKS - DON'T BREAK IT
+  //The 'async' allows the javascript in the function to use await statements
+  parallelAPIs = async function() {
+    console.log("Launching Parallel API calls");
+
+    //Begins both of the API calls as Promises
+    let openSkyPromise = new Promise((resolveSent, reject) => {
+      this.callOpenSkyAPI(resolveSent);
+    });
+    let backendPromise = new Promise((resolveSent, reject) => {
+      this.callBackendAPI(resolveSent);
+    });
+
+    //This pauses the script here until each part of this promise has completed a resolve
+    await Promise.all([openSkyPromise, backendPromise]);
+
+    //Calculate the user's arrays here
+    let userTrackedPlanes = [];
+    for(let i = 0; i < this.state.planeArray.length; i++) {
+      let thisPlanesICAO = this.state.planeArray[i][0];
+      if (this.state.loggedUserInfo.usersPlanesIds.indexOf(thisPlanesICAO) !== -1) {
+        userTrackedPlanes.push(this.state.planeArray[i]);
+      }
+    }
+    //Add these to state!
+    console.log(userTrackedPlanes);
+
+    this.setState( (prevState) => {
+      return {
+        loggedUserInfo: Object.assign(
+          {},
+          prevState.loggedUserInfo,
+          {myPlanesData: userTrackedPlanes}
+        )}
+      })
+  };
+
+  //OpenSky api call - used for the promise
+  callOpenSkyAPI(resolution) {
+    console.log("API CALL");
+    fetch('https://opensky-network.org/api/states/all?lamin=45.6272&lomin=-123.1207&lamax=49.2827&lomax=-115.4260').then(data => data.json()).then(jData => {
+      console.log(jData.states);
+      this.setState({
+        planeArray: jData.states
+      }, () => {
+        console.log("OpenSky Done");
+        resolution("OpenSky Done");
+      })
+    })
+  }
+
+  callBackendAPI(resolution) {
+    console.log("GET THE PLANES");
+    fetch(`http://localhost:3000/users/${this.state.loggedUserInfo.userDatabaseID}`, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      }
+    }).then(data => {
+      return data.json();
+    }).then(jData => {
+      let usersPlaneArray = [];
+      let tempDeleteIDs = [];
+      for(let i = 0; i < jData.length; i++) {
+        usersPlaneArray.push(jData[i].icao_id);
+        tempDeleteIDs.push(jData[i].plane_database_id);
+      }
+      this.setState( (prevState) => {
+        return {
+          loggedUserInfo: Object.assign(
+            {},
+            prevState.loggedUserInfo,
+            {usersPlanesIds: usersPlaneArray},
+            {deleteID: tempDeleteIDs}
+          )}
+        }, () => {
+          console.log("Backend Done");
+          resolution("Backend Done");
+        })
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+  //END TESTING ZONE
+
+
   handleLogIn(userData){
-    console.log(userData);
-    console.log(this.state);
+    // console.log(userData);
+    // console.log(this.state);
     fetch(`http://localhost:3000/users/logIn`, {
       body: JSON.stringify(userData),
       method: "POST",
@@ -67,15 +173,45 @@ class App extends Component {
             isLoggedIn:true,
             loggedUserInfo: {
               username: jData.username,
-              userDatabaseID: jData.id
+              userDatabaseID: jData.id,
+              usersPlanesIds: [],
+              myPlanesData: []
             }
           }
         })
         console.log("LOGGED IN");
+        this.parallelAPIs();
       } else {
         console.log("INVALID CREDENTIALS");
       }
     })
+  }
+
+  getUsersPlanes() {
+    console.log("GET THE PLANES");
+    fetch(`http://localhost:3000/users/${this.state.loggedUserInfo.userDatabaseID}`, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      }
+    }).then(data => {
+      return data.json();
+    }).then(jData => {
+      let usersPlaneArray = [];
+      for(let i = 0; i < jData.length; i++) {
+        usersPlaneArray.push(jData[i].icao_id);
+      }
+      this.setState( (prevState) => {
+        return {
+          loggedUserInfo: Object.assign(
+            {},
+            prevState.loggedUserInfo,
+            {usersPlanesIds: usersPlaneArray}
+          )
+          }
+        })
+    });
   }
 
   handleLogOut() {
@@ -84,7 +220,10 @@ class App extends Component {
         isLoggedIn:false,
         loggedUserInfo: {
           username: "",
-          userDatabaseID: null
+          userDatabaseID: null,
+          usersPlanesIds: [],
+          myPlanesData: [],
+          deleteID: []
         }
       }
     })
@@ -158,6 +297,7 @@ class App extends Component {
           <OurMap
           planeArray={this.state.planeArray}
           userInfo={this.state.loggedUserInfo}
+          isLoggedIn={this.state.isLoggedIn}
           />
           </div>
         </div>
