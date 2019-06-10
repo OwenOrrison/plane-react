@@ -111,6 +111,29 @@ class OurMap extends Component {
               </Popup>
             </Marker>
           ))}
+          {this.props.userInfo.myPlanesData.map(plane => (
+            <Marker
+              key={plane}
+              position={[plane[6],plane[5]]}
+              icon={blueIcon}
+            >
+            {this.props.userInfo.usersPlanesIds.length > 0 ?
+            <Tooltip direction="bottom" >
+            {this.props.userInfo.usersPlanesIds.map(myPlane => (myPlane === plane[0] ? <p key={myPlane}>hello</p> : ""))}
+            </Tooltip> : null }
+
+              <Popup>
+              <div>
+              <ul>
+                <li> icao_ID: {plane[0]}</li>
+                <li> velocity: {plane[9]} m/s</li>
+                <li> direction: {plane[10]}°</li>
+              </ul>
+              </div>
+              {this.props.isLoggedIn ? <button onClick={() => {this.handleMyPlanes(plane[0],this.props.userInfo.userDatabaseID)}}>ADD TO MYTRACKER</button> : <p>LOG IN TO TRACK</p> }
+              </Popup>
+            </Marker>
+          ))}
         </Map>
       )
 }
