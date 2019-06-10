@@ -12,12 +12,6 @@ import airplaneRed from '../Airplane_GA_Red.svg'
 // const zoomLevel = 13;
 // const id = 'mapid'
 
-if(ENV["IS_ON_HEROKU"]) {
-  const baseURL = "https://whispering-mesa-41107.herokuapp.com";
-} else {
-  const baseURL = "http://localhost:3000";
-}
-
 const blackIcon = L.icon({
   iconUrl: airplaneIcon,
   iconSize:[20,20],
@@ -50,13 +44,25 @@ class OurMap extends Component {
   this.handleMyPlanes=this.handleMyPlanes.bind(this)
   }
 
+  getBaseURL() {
+    let baseURL
+    if(process.env["IS_ON_HEROKU"]) {
+      baseURL = "https://whispering-mesa-41107.herokuapp.com";
+      console.log("AAA");
+    } else {
+      baseURL = "http://localhost:3000";
+      console.log("AAA");
+    }
+    return baseURL;
+  }
+
   handleMyPlanes(planeData, userData){
     console.log(planeData, userData);
     let myData = {
       planeData: planeData,
       userData: userData
     }
-    fetch(`${baseURL}/planes`, {
+    fetch(`${this.getBaseURL()}/planes`, {
       body: JSON.stringify(myData),
       method: "POST",
       headers: {
