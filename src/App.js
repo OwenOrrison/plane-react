@@ -5,6 +5,9 @@ import UserForm from './components/UserForm.js'
 import './App.css';
 
 
+
+
+
 class App extends Component {
 
   constructor(props){
@@ -16,6 +19,7 @@ class App extends Component {
     this.handleDeleteUser  =this.handleDeleteUser.bind(this);
     this.handleEditUser = this.handleEditUser.bind(this);
     this.handlePlaneDelete = this.handlePlaneDelete.bind(this);
+
 
     this.state={
       isLoggedIn:false,
@@ -37,6 +41,7 @@ class App extends Component {
     this.callOpenSkyAPI = this.callOpenSkyAPI.bind(this);
     this.parallelAPIs = this.parallelAPIs.bind(this);
     this.callBackendAPI = this.callBackendAPI.bind(this);
+    this.getBaseURL =this.getBaseURL.bind(this);
 
     //END TESTING ZONE
   }
@@ -109,9 +114,21 @@ class App extends Component {
     })
   }
 
+  getBaseURL() {
+    let baseURL
+    if(process.env["IS_ON_HEROKU"]) {
+      baseURL = "https://whispering-mesa-41107.herokuapp.com";
+      console.log("AAA");
+    } else {
+      baseURL = "http://localhost:3000";
+      console.log("AAA");
+    }
+    return baseURL;
+  }
+
   callBackendAPI(resolution) {
     console.log("GET THE PLANES");
-    fetch(`http://localhost:3000/users/${this.state.loggedUserInfo.userDatabaseID}`, {
+    fetch(`${this.getBaseURL()}/users/${this.state.loggedUserInfo.userDatabaseID}`, {
       method: "GET",
       headers: {
         'Accept': 'application/json, text/plain, */*',
@@ -157,7 +174,7 @@ class App extends Component {
   handleLogIn(userData){
     // console.log(userData);
     // console.log(this.state);
-    fetch(`http://localhost:3000/users/logIn`, {
+    fetch(`${this.getBaseURL()}/users/logIn`, {
       body: JSON.stringify(userData),
       method: "POST",
       headers: {
@@ -190,7 +207,7 @@ class App extends Component {
 
   getUsersPlanes() {
     console.log("GET THE PLANES");
-    fetch(`http://localhost:3000/users/${this.state.loggedUserInfo.userDatabaseID}`, {
+    fetch(`${this.getBaseURL()}/users/${this.state.loggedUserInfo.userDatabaseID}`, {
       method: "GET",
       headers: {
         'Accept': 'application/json, text/plain, */*',
@@ -235,7 +252,7 @@ class App extends Component {
 
   handleCreateUser(userData){
     console.log(userData);
-    fetch(`http://localhost:3000/users`, {
+    fetch(`${this.getBaseURL()}/users`, {
       body: JSON.stringify(userData),
       method: "POST",
       headers: {
@@ -258,7 +275,7 @@ class App extends Component {
     console.log(planes);
     let deleteIndex = this.state.loggedUserInfo.usersPlanesIds.indexOf(planes);
     console.log(deleteIndex);
-    fetch(`http://localhost:3000/planes/${this.state.loggedUserInfo.deleteID[deleteIndex]}`,{
+    fetch(`${this.getBaseURL()}/planes/${this.state.loggedUserInfo.deleteID[deleteIndex]}`,{
       method:"DELETE"
     })
   }
@@ -268,7 +285,7 @@ class App extends Component {
   /////////////////////////
 
   handleDeleteUser(){
-    fetch(`http://localhost:3000/users/${this.state.loggedUserInfo.userDatabaseID}`, {
+    fetch(`${this.getBaseURL()}/users/${this.state.loggedUserInfo.userDatabaseID}`, {
       method: "DELETE",
       headers: {
         'Accept': 'application/json, text/plain, */*',
@@ -287,7 +304,7 @@ class App extends Component {
     console.log(userData);
     console.log(this.state);
     console.log(this.state.loggedUserInfo.userDatabaseID);
-    fetch(`http://localhost:3000/users/${this.state.loggedUserInfo.userDatabaseID}`, {
+    fetch(`${this.getBaseURL()}/users/${this.state.loggedUserInfo.userDatabaseID}`, {
       body: JSON.stringify(userData),
       method: "PUT",
       headers: {
