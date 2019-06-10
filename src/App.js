@@ -67,7 +67,8 @@ class App extends Component {
             isLoggedIn:true,
             loggedUserInfo: {
               username: jData.username,
-              userDatabaseID: jData.id
+              userDatabaseID: jData.id,
+              myPlanes: []
             }
           }
         })
@@ -84,7 +85,8 @@ class App extends Component {
         isLoggedIn:false,
         loggedUserInfo: {
           username: "",
-          userDatabaseID: null
+          userDatabaseID: null,
+          myPlanes: []
         }
       }
     })
@@ -158,6 +160,7 @@ class App extends Component {
           <OurMap
           planeArray={this.state.planeArray}
           userInfo={this.state.loggedUserInfo}
+          isLoggedIn={this.state.isLoggedIn}
           />
           </div>
         </div>
