@@ -29,6 +29,13 @@ class App extends Component {
     this.handleAPICall=this.handleAPICall.bind(this)
     this.componentDidMount=this.componentDidMount.bind(this)
     this.handlePlaneArray=this.handlePlaneArray.bind(this)
+
+    //TESTING ZONE
+
+    this.callOpenSkyAPI = this.callOpenSkyAPI.bind(this);
+    this.parallelAPIs = this.parallelAPIs.bind(this);
+
+    //END TESTING ZONE
   }
   handlePlaneArray(planes){
     let newArray=[]
@@ -47,9 +54,87 @@ class App extends Component {
     this.handleAPICall()
   }
 
+  //TESTING ZONE
+  //THIS WORKS - DON'T BREAK IT
+  parallelAPIs = async function() {
+    console.log("Launching Parallel API calls");
+
+
+    let openSkyPromise = new Promise((resolveSent, reject) => {
+      this.callOpenSkyAPI(resolveSent);
+    });
+    let backendPromise = new Promise((resolveSent, reject) => {
+      this.callbackendAPI(resolveSent);
+    });
+
+    let allResults = Promise.all([openSkyPromise, backendPromise]);
+
+    let result = await allResults;
+    console.log(result);
+    console.log("WHEE");
+
+
+
+
+  }
+
+  callOpenSkyAPI(resolution) {
+    console.log("API CALL");
+    fetch('https://opensky-network.org/api/states/all?lamin=45.6272&lomin=-123.1207&lamax=49.2827&lomax=-115.4260').then(data => data.json()).then(jData => {
+      console.log(jData.states);
+      this.setState({
+        planeArray: jData.states
+      }, () => {
+        resolution("OpenSky Done");
+      })
+    })
+  }
+
+  callbackendAPI(resolution) {
+    console.log("GET THE PLANES");
+    fetch(`http://localhost:3000/users/${this.state.loggedUserInfo.userDatabaseID}`, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      }
+    }).then(data => {
+      return data.json();
+    }).then(jData => {
+      let usersPlaneArray = [];
+      for(let i = 0; i < jData.length; i++) {
+        usersPlaneArray.push(jData[i].icao_id);
+      }
+      this.setState( (prevState) => {
+        return {
+          loggedUserInfo: Object.assign(
+            {},
+            prevState.loggedUserInfo,
+            {myPlanes: usersPlaneArray}
+          )
+          }
+        }, () => {
+          resolution("Backend Done");
+        })
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+
+  //END TESTING ZONE
+
+
   handleLogIn(userData){
-    console.log(userData);
-    console.log(this.state);
+    // console.log(userData);
+    // console.log(this.state);
     fetch(`http://localhost:3000/users/logIn`, {
       body: JSON.stringify(userData),
       method: "POST",
@@ -73,7 +158,8 @@ class App extends Component {
           }
         })
         console.log("LOGGED IN");
-        this.getUsersPlanes();
+        // this.getUsersPlanes();
+        this.parallelAPIs();
       } else {
         console.log("INVALID CREDENTIALS");
       }
@@ -81,6 +167,7 @@ class App extends Component {
   }
 
   getUsersPlanes() {
+    console.log("GET THE PLANES");
     fetch(`http://localhost:3000/users/${this.state.loggedUserInfo.userDatabaseID}`, {
       method: "GET",
       headers: {

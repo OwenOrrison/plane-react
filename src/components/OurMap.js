@@ -50,9 +50,9 @@ class OurMap extends Component {
   }
 
   render(){
-      console.log("render");
-      console.log(this.props.userInfo);
-      console.log(this.props.planeArray)
+      // console.log("render");
+      // console.log(this.props.userInfo);
+      // console.log(this.props.planeArray);
       const position=[this.state.lat, this.state.lng]
       return (
         <Map className="map" center={position} zoom={this.state.zoom}>
