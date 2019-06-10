@@ -73,10 +73,35 @@ class App extends Component {
           }
         })
         console.log("LOGGED IN");
+        this.getUsersPlanes();
       } else {
         console.log("INVALID CREDENTIALS");
       }
     })
+  }
+
+  getUsersPlanes() {
+    fetch(`http://localhost:3000/users/${this.state.loggedUserInfo.userDatabaseID}`, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      }
+    }).then(data => {
+      return data.json();
+    }).then(jData => {
+      let usersPlaneArray = [];
+      for(let i = 0; i < jData.length; i++) {
+        usersPlaneArray.push(jData[i].icao_id);
+      }
+      this.setState( (prevState) => {
+        return {
+          loggedUserInfo: {
+            myPlanes: usersPlaneArray
+          }
+        }
+      })
+    });
   }
 
   handleLogOut() {
