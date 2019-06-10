@@ -24,30 +24,34 @@ class OurMap extends Component {
       lat: 47.4162,
       lng: -121.0,
       zoom: 7,
-  }
+    }
   this.handleMyPlanes=this.handleMyPlanes.bind(this)
   }
+
   handleMyPlanes(planeData, userData){
-      console.log(planeData, userData);
-      let myData = {
-        planeData: planeData,
-        userData: userData
-      }
-      fetch(`http://localhost:3000/planes`, {
-        body: JSON.stringify(myData),
-        method: "POST",
-        headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(data => {
-        return data.json();
-      }).then(jData => {
-        console.log(jData);
-      })
+    console.log(planeData, userData);
+    let myData = {
+      planeData: planeData,
+      userData: userData
     }
+    fetch(`http://localhost:3000/planes`, {
+      body: JSON.stringify(myData),
+      method: "POST",
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(data => {
+      return data.json();
+    }).then(jData => {
+      console.log(jData);
+    })
+  }
+
   render(){
+      console.log("render");
+      console.log(this.props.userInfo);
       console.log(this.props.planeArray)
       const position=[this.state.lat, this.state.lng]
       return (
@@ -64,7 +68,7 @@ class OurMap extends Component {
             >
             {this.props.userInfo.myPlanes.length > 0 ?
             <Tooltip direction="bottom" >
-            {this.props.userInfo.myPlanes.map(myPlane => (myPlane === plane[0] ? <p key={plane}>hello</p> : <p key={plane}>nope</p>))}
+            {this.props.userInfo.myPlanes.map(myPlane => (myPlane === plane[0] ? <p key={myPlane}>hello</p> : ""))}
             </Tooltip> : null }
 
               <Popup>
@@ -75,7 +79,7 @@ class OurMap extends Component {
                 <li> direction: {plane[10]}°</li>
               </ul>
               </div>
-              {this.props.userInfo.isLoggedIn ? <button onClick={this.handleMyPlanes(plane[0],this.props.userInfo.userDatabaseID)}>ADD TO MYTRACKER</button> : <p>LOG IN TO TRACK</p> }
+              {this.props.isLoggedIn ? <button onClick={() => {this.handleMyPlanes(plane[0],this.props.userInfo.userDatabaseID)}}>ADD TO MYTRACKER</button> : <p>LOG IN TO TRACK</p> }
               </Popup>
             </Marker>
           ))}

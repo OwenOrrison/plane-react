@@ -67,15 +67,43 @@ class App extends Component {
             isLoggedIn:true,
             loggedUserInfo: {
               username: jData.username,
-              userDatabaseID: jData.id
+              userDatabaseID: jData.id,
+              myPlanes: []
             }
           }
         })
         console.log("LOGGED IN");
+        this.getUsersPlanes();
       } else {
         console.log("INVALID CREDENTIALS");
       }
     })
+  }
+
+  getUsersPlanes() {
+    fetch(`http://localhost:3000/users/${this.state.loggedUserInfo.userDatabaseID}`, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      }
+    }).then(data => {
+      return data.json();
+    }).then(jData => {
+      let usersPlaneArray = [];
+      for(let i = 0; i < jData.length; i++) {
+        usersPlaneArray.push(jData[i].icao_id);
+      }
+      this.setState( (prevState) => {
+        return {
+          loggedUserInfo: Object.assign(
+            {},
+            prevState.loggedUserInfo,
+            {myPlanes: usersPlaneArray}
+          )
+          }
+        })
+    });
   }
 
   handleLogOut() {
@@ -84,7 +112,8 @@ class App extends Component {
         isLoggedIn:false,
         loggedUserInfo: {
           username: "",
-          userDatabaseID: null
+          userDatabaseID: null,
+          myPlanes: []
         }
       }
     })
@@ -158,6 +187,7 @@ class App extends Component {
           <OurMap
           planeArray={this.state.planeArray}
           userInfo={this.state.loggedUserInfo}
+          isLoggedIn={this.state.isLoggedIn}
           />
           </div>
         </div>
