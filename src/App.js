@@ -23,7 +23,8 @@ class App extends Component {
       loggedUserInfo: {
         username: "",
         userDatabaseID: null,
-        myPlanes: [] //make sure that we add planes back on log in.
+        usersPlanesIds: [], //make sure that we add planes back on log in.
+        myPlanesData: []
       }
     }
     this.handleAPICall=this.handleAPICall.bind(this)
@@ -34,6 +35,7 @@ class App extends Component {
 
     this.callOpenSkyAPI = this.callOpenSkyAPI.bind(this);
     this.parallelAPIs = this.parallelAPIs.bind(this);
+    this.callBackendAPI = this.callBackendAPI.bind(this);
 
     //END TESTING ZONE
   }
@@ -56,28 +58,43 @@ class App extends Component {
 
   //TESTING ZONE
   //THIS WORKS - DON'T BREAK IT
+  //The 'async' allows the javascript in the function to use await statements
   parallelAPIs = async function() {
     console.log("Launching Parallel API calls");
 
-
+    //Begins both of the API calls as Promises
     let openSkyPromise = new Promise((resolveSent, reject) => {
       this.callOpenSkyAPI(resolveSent);
     });
     let backendPromise = new Promise((resolveSent, reject) => {
-      this.callbackendAPI(resolveSent);
+      this.callBackendAPI(resolveSent);
     });
 
-    let allResults = Promise.all([openSkyPromise, backendPromise]);
+    //This pauses the script here until each part of this promise has completed a resolve
+    await Promise.all([openSkyPromise, backendPromise]);
 
-    let result = await allResults;
-    console.log(result);
-    console.log("WHEE");
+    //Calculate the user's arrays here
+    let userTrackedPlanes = [];
+    for(let i = 0; i < this.state.planeArray.length; i++) {
+      let thisPlanesICAO = this.state.planeArray[i][0];
+      if (this.state.loggedUserInfo.usersPlanesIds.indexOf(thisPlanesICAO) !== -1) {
+        userTrackedPlanes.push(this.state.planeArray[i]);
+      }
+    }
+    //Add these to state!
+    console.log(userTrackedPlanes);
 
+    this.setState( (prevState) => {
+      return {
+        loggedUserInfo: Object.assign(
+          {},
+          prevState.loggedUserInfo,
+          {myPlanesData: userTrackedPlanes}
+        )}
+      })
+  };
 
-
-
-  }
-
+  //OpenSky api call - used for the promise
   callOpenSkyAPI(resolution) {
     console.log("API CALL");
     fetch('https://opensky-network.org/api/states/all?lamin=45.6272&lomin=-123.1207&lamax=49.2827&lomax=-115.4260').then(data => data.json()).then(jData => {
@@ -85,12 +102,13 @@ class App extends Component {
       this.setState({
         planeArray: jData.states
       }, () => {
+        console.log("OpenSky Done");
         resolution("OpenSky Done");
       })
     })
   }
 
-  callbackendAPI(resolution) {
+  callBackendAPI(resolution) {
     console.log("GET THE PLANES");
     fetch(`http://localhost:3000/users/${this.state.loggedUserInfo.userDatabaseID}`, {
       method: "GET",
@@ -102,18 +120,21 @@ class App extends Component {
       return data.json();
     }).then(jData => {
       let usersPlaneArray = [];
+      let tempDeleteIDs = [];
       for(let i = 0; i < jData.length; i++) {
         usersPlaneArray.push(jData[i].icao_id);
+        tempDeleteIDs.push(jData[i].plane_database_id);
       }
       this.setState( (prevState) => {
         return {
           loggedUserInfo: Object.assign(
             {},
             prevState.loggedUserInfo,
-            {myPlanes: usersPlaneArray}
-          )
-          }
+            {usersPlanesIds: usersPlaneArray},
+            {deleteID: tempDeleteIDs}
+          )}
         }, () => {
+          console.log("Backend Done");
           resolution("Backend Done");
         })
     });
@@ -153,12 +174,12 @@ class App extends Component {
             loggedUserInfo: {
               username: jData.username,
               userDatabaseID: jData.id,
-              myPlanes: []
+              usersPlanesIds: [],
+              myPlanesData: []
             }
           }
         })
         console.log("LOGGED IN");
-        // this.getUsersPlanes();
         this.parallelAPIs();
       } else {
         console.log("INVALID CREDENTIALS");
@@ -186,7 +207,7 @@ class App extends Component {
           loggedUserInfo: Object.assign(
             {},
             prevState.loggedUserInfo,
-            {myPlanes: usersPlaneArray}
+            {usersPlanesIds: usersPlaneArray}
           )
           }
         })
@@ -200,7 +221,9 @@ class App extends Component {
         loggedUserInfo: {
           username: "",
           userDatabaseID: null,
-          myPlanes: []
+          usersPlanesIds: [],
+          myPlanesData: [],
+          deleteID: []
         }
       }
     })
