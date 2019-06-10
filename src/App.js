@@ -59,7 +59,7 @@ class App extends Component {
 
   componentDidMount() {
     this.handleAPICall();
-    // this.intervalID();
+    this.intervalID();
  }
 
   intervalID(){
@@ -68,7 +68,7 @@ class App extends Component {
         this.parallelAPIs();
       }else{
         this.handleAPICall()
-      }},60000)
+      }},10000)
   }
   //TESTING ZONE
   //THIS WORKS - DON'T BREAK IT
@@ -194,8 +194,9 @@ class App extends Component {
           }
         })
         console.log("LOGGED IN");
-        // window.clearInterval(this.intervalID());
-        // this.intervalID();
+        window.clearInterval(this.interval);
+        this.parallelAPIs();
+        this.intervalID();
       } else {
         console.log("INVALID CREDENTIALS");
       }
