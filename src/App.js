@@ -96,11 +96,13 @@ class App extends Component {
       }
       this.setState( (prevState) => {
         return {
-          loggedUserInfo: {
-            myPlanes: usersPlaneArray
+          loggedUserInfo: Object.assign(
+            {},
+            prevState.loggedUserInfo,
+            {myPlanes: usersPlaneArray}
+          )
           }
-        }
-      })
+        })
     });
   }
 

@@ -68,7 +68,7 @@ class OurMap extends Component {
             >
             {this.props.userInfo.myPlanes.length > 0 ?
             <Tooltip direction="bottom" >
-            {this.props.userInfo.myPlanes.map(myPlane => (myPlane === plane[0] ? <p key={plane}>hello</p> : <p key={plane}>nope</p>))}
+            {this.props.userInfo.myPlanes.map(myPlane => (myPlane === plane[0] ? <p key={myPlane}>hello</p> : ""))}
             </Tooltip> : null }
 
               <Popup>
