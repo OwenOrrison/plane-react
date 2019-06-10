@@ -13,7 +13,7 @@ import airplaneRed from '../Airplane_GA_Red.svg'
 // const id = 'mapid'
 
 if(ENV["IS_ON_HEROKU"]) {
-  const baseURL = "https://whispering-mesa-41107.herokuapp.com/";
+  const baseURL = "https://whispering-mesa-41107.herokuapp.com";
 } else {
   const baseURL = "http://localhost:3000";
 }

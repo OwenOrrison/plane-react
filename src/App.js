@@ -5,7 +5,7 @@ import UserForm from './components/UserForm.js'
 import './App.css';
 
 if(ENV["IS_ON_HEROKU"]) {
-  const baseURL = "https://whispering-mesa-41107.herokuapp.com/";
+  const baseURL = "https://whispering-mesa-41107.herokuapp.com";
 } else {
   const baseURL = "http://localhost:3000";
 }
