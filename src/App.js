@@ -15,15 +15,16 @@ class App extends Component {
     this.handleCreateUser = this.handleCreateUser.bind(this);
     this.handleDeleteUser  =this.handleDeleteUser.bind(this);
     this.handleEditUser = this.handleEditUser.bind(this);
-
+    this.handlePlaneDelete = this.handlePlaneDelete.bind(this);
 
     this.state={
       isLoggedIn:false,
       planeArray:[],
+
       loggedUserInfo: {
         username: "",
         userDatabaseID: null,
-        myPlanes: [] //make sure that we add planes back on log in.
+        usersPlanesIds: [] //make sure that we add planes back on log in.
       }
     }
     this.handleAPICall=this.handleAPICall.bind(this)
@@ -68,7 +69,7 @@ class App extends Component {
             loggedUserInfo: {
               username: jData.username,
               userDatabaseID: jData.id,
-              myPlanes: []
+              usersPlanesIds: []
             }
           }
         })
@@ -90,16 +91,19 @@ class App extends Component {
     }).then(data => {
       return data.json();
     }).then(jData => {
-      let usersPlaneArray = [];
+      let tempUserPlaneId = [];
+      let tempDBID=[];
       for(let i = 0; i < jData.length; i++) {
-        usersPlaneArray.push(jData[i].icao_id);
+        tempUserPlaneId.push(jData[i].icao_id);
+        tempDBID.push(jData[i].plane_database_id);
       }
       this.setState( (prevState) => {
         return {
           loggedUserInfo: Object.assign(
             {},
             prevState.loggedUserInfo,
-            {myPlanes: usersPlaneArray}
+            {usersPlanesIds: tempUserPlaneId},
+            {deleteID: tempDBID}
           )
           }
         })
@@ -113,7 +117,8 @@ class App extends Component {
         loggedUserInfo: {
           username: "",
           userDatabaseID: null,
-          myPlanes: []
+          usersPlanesIds: [],
+          deleteID: []
         }
       }
     })
@@ -135,6 +140,23 @@ class App extends Component {
       console.log(jData);
     })
   }
+  /////////////////////////
+  /////////////////////////
+  //Move to lower component
+  /////////////////////////
+  /////////////////////////
+  handlePlaneDelete(planes){
+    console.log(planes);
+    let deleteIndex = this.state.loggedUserInfo.usersPlanesIds.indexOf(planes);
+    console.log(deleteIndex);
+    fetch(`http://localhost:3000/planes/${this.state.loggedUserInfo.deleteID[deleteIndex]}`,{
+      method:"DELETE"
+    })
+  }
+  /////////////////////////
+  /////////////////////////
+  /////////////////////////
+  /////////////////////////
 
   handleDeleteUser(){
     fetch(`http://localhost:3000/users/${this.state.loggedUserInfo.userDatabaseID}`, {
@@ -167,7 +189,7 @@ class App extends Component {
     .then(data => {
       return data.json();
     }).then(jData => {
-      console.log(jData);
+      // console.log(jData);
     })
   }
 
@@ -176,6 +198,7 @@ class App extends Component {
   render(){
       return (
         <div>
+        <h1>Inclined Plane™</h1>
           <UserForm handleLogIn={this.handleLogIn}
           handleLogOut={this.handleLogOut}
           handleCreateUser={this.handleCreateUser}
@@ -190,10 +213,19 @@ class App extends Component {
           isLoggedIn={this.state.isLoggedIn}
           />
           </div>
+          <div>
+          {this.state.isLoggedIn ?
+          <div>{this.state.loggedUserInfo.username}
+          <h3>Planes you are tracking:</h3>
+          <ul>
+          {this.state.loggedUserInfo.usersPlanesIds.map(planes => (
+              <li key={planes}>{planes}<button onClick={()=>this.handlePlaneDelete(planes)}>X</button></li>
+          ))} </ul></div> : null }
+
+          </div>
         </div>
       )
     }
-
 }
 
 export default App;
