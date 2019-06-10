@@ -44,13 +44,25 @@ class OurMap extends Component {
   this.handleMyPlanes=this.handleMyPlanes.bind(this)
   }
 
+  getBaseURL() {
+    let baseURL
+    if(process.env["IS_ON_HEROKU"]) {
+      baseURL = "https://whispering-mesa-41107.herokuapp.com";
+      console.log("AAA");
+    } else {
+      baseURL = "http://localhost:3000";
+      console.log("AAA");
+    }
+    return baseURL;
+  }
+
   handleMyPlanes(planeData, userData){
     console.log(planeData, userData);
     let myData = {
       planeData: planeData,
       userData: userData
     }
-    fetch(`http://localhost:3000/planes`, {
+    fetch(`${this.getBaseURL()}/planes`, {
       body: JSON.stringify(myData),
       method: "POST",
       headers: {
