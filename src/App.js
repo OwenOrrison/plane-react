@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import OurMap from './components/OurMap.js';
+import Display from './components/Display.js';
 // import Form from './components/Form.js'
 import UserForm from './components/UserForm.js'
 import './App.css';
@@ -16,6 +17,7 @@ class App extends Component {
     this.handleDeleteUser  =this.handleDeleteUser.bind(this);
     this.handleEditUser = this.handleEditUser.bind(this);
     this.handlePlaneDelete = this.handlePlaneDelete.bind(this);
+    this.intervalID=this.intervalID.bind(this)
 
     this.state={
       isLoggedIn:false,
@@ -51,12 +53,23 @@ class App extends Component {
   }
 
   handleAPICall(){
-    fetch('https://opensky-network.org/api/states/all?lamin=45.6272&lomin=-123.1207&lamax=49.2827&lomax=-115.4260').then(data => data.json()).then(jData => this.handlePlaneArray(jData.states))
-  }
-  componentDidMount(){
-    this.handleAPICall()
+    fetch('https://opensky-network.org/api/states/all?lamin=45.6272&lomin=-123.1207&lamax=49.2827&lomax=-115.4260').then(data => data.json()).then(jData => this.handlePlaneArray(jData.states));
+    console.log('handleAPICall');
   }
 
+  componentDidMount() {
+    this.handleAPICall();
+    // this.intervalID();
+ }
+
+  intervalID(){
+    this.interval = setInterval(()=>{
+      if(this.state.isLoggedIn){
+        this.parallelAPIs();
+      }else{
+        this.handleAPICall()
+      }},60000)
+  }
   //TESTING ZONE
   //THIS WORKS - DON'T BREAK IT
   //The 'async' allows the javascript in the function to use await statements
@@ -97,20 +110,20 @@ class App extends Component {
 
   //OpenSky api call - used for the promise
   callOpenSkyAPI(resolution) {
-    console.log("API CALL");
+    // console.log("API CALL");
     fetch('https://opensky-network.org/api/states/all?lamin=45.6272&lomin=-123.1207&lamax=49.2827&lomax=-115.4260').then(data => data.json()).then(jData => {
-      console.log(jData.states);
+      // console.log(jData.states);
       this.setState({
         planeArray: jData.states
       }, () => {
-        console.log("OpenSky Done");
+        // console.log("OpenSky Done");
         resolution("OpenSky Done");
       })
     })
   }
 
   callBackendAPI(resolution) {
-    console.log("GET THE PLANES");
+    // console.log("GET THE PLANES");
     fetch(`http://localhost:3000/users/${this.state.loggedUserInfo.userDatabaseID}`, {
       method: "GET",
       headers: {
@@ -135,7 +148,7 @@ class App extends Component {
             {deleteID: tempDeleteIDs}
           )}
         }, () => {
-          console.log("Backend Done");
+          // console.log("Backend Done");
           resolution("Backend Done");
         })
     });
@@ -181,7 +194,8 @@ class App extends Component {
           }
         })
         console.log("LOGGED IN");
-        this.parallelAPIs();
+        // window.clearInterval(this.intervalID());
+        // this.intervalID();
       } else {
         console.log("INVALID CREDENTIALS");
       }
@@ -249,23 +263,6 @@ class App extends Component {
       console.log(jData);
     })
   }
-  /////////////////////////
-  /////////////////////////
-  //Move to lower component
-  /////////////////////////
-  /////////////////////////
-  handlePlaneDelete(planes){
-    console.log(planes);
-    let deleteIndex = this.state.loggedUserInfo.usersPlanesIds.indexOf(planes);
-    console.log(deleteIndex);
-    fetch(`http://localhost:3000/planes/${this.state.loggedUserInfo.deleteID[deleteIndex]}`,{
-      method:"DELETE"
-    })
-  }
-  /////////////////////////
-  /////////////////////////
-  /////////////////////////
-  /////////////////////////
 
   handleDeleteUser(){
     fetch(`http://localhost:3000/users/${this.state.loggedUserInfo.userDatabaseID}`, {
@@ -302,6 +299,30 @@ class App extends Component {
     })
   }
 
+  handlePlaneDelete(planes){
+    // console.log(planes);
+    let deleteIndex = this.state.loggedUserInfo.usersPlanesIds.indexOf(planes);
+    // console.log(deleteIndex);
+    fetch(`http://localhost:3000/planes/${this.state.loggedUserInfo.deleteID[deleteIndex]}`,{
+      method:"DELETE"
+    }).then(this.setState( (prevState) => {
+      prevState.loggedUserInfo.usersPlanesIds.splice(deleteIndex,1)
+      prevState.loggedUserInfo.myPlanesData.splice(deleteIndex,1)
+      prevState.loggedUserInfo.deleteID.splice(deleteIndex,1)
+      // console.log(prevState);
+      return {
+        loggedUserInfo: Object.assign(
+          {},
+          prevState.loggedUserInfo
+        )
+        }
+      }))
+  }
+
+  // usersPlanesIds: [],
+  // myPlanesData: [],
+  // deleteID: []
+
 
 
   render(){
@@ -323,14 +344,11 @@ class App extends Component {
           />
           </div>
           <div>
-          {this.state.isLoggedIn ?
-          <div>{this.state.loggedUserInfo.username}
-          <h3>Planes you are tracking:</h3>
-          <ul>
-          {this.state.loggedUserInfo.usersPlanesIds.map(planes => (
-              <li key={planes}>{planes}<button onClick={()=>this.handlePlaneDelete(planes)}>X</button></li>
-          ))} </ul></div> : null }
-
+          <Display
+          isLoggedIn={this.state.isLoggedIn}
+          loggedUserInfo={this.state.loggedUserInfo}
+          handlePlaneDelete={this.handlePlaneDelete}
+          />
           </div>
         </div>
       )
