@@ -12,6 +12,12 @@ import airplaneRed from '../Airplane_GA_Red.svg'
 // const zoomLevel = 13;
 // const id = 'mapid'
 
+if(ENV["IS_ON_HEROKU"]) {
+  const baseURL = "https://whispering-mesa-41107.herokuapp.com/";
+} else {
+  const baseURL = "http://localhost:3000";
+}
+
 const blackIcon = L.icon({
   iconUrl: airplaneIcon,
   iconSize:[20,20],
@@ -50,7 +56,7 @@ class OurMap extends Component {
       planeData: planeData,
       userData: userData
     }
-    fetch(`http://localhost:3000/planes`, {
+    fetch(`${baseURL}/planes`, {
       body: JSON.stringify(myData),
       method: "POST",
       headers: {
