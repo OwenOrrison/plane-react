@@ -94,17 +94,21 @@ class App extends Component {
 
     //Calculate the user's arrays here
     let userTrackedPlanes = [];
+    let leftoverPlanes = [];
     for(let i = 0; i < this.state.planeArray.length; i++) {
       let thisPlanesICAO = this.state.planeArray[i][0];
       if (this.state.loggedUserInfo.usersPlanesIds.indexOf(thisPlanesICAO) !== -1) {
         userTrackedPlanes.push(this.state.planeArray[i]);
+      } else {
+        leftoverPlanes.push(this.state.planeArray[i]);
       }
     }
     //Add these to state!
     console.log(userTrackedPlanes);
-
+    console.log(leftoverPlanes);
     this.setState( (prevState) => {
       return {
+        planeArray: leftoverPlanes,
         loggedUserInfo: Object.assign(
           {},
           prevState.loggedUserInfo,
