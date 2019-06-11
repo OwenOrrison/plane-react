@@ -82,6 +82,8 @@ class OurMap extends Component {
       // console.log("render");
       // console.log(this.props.userInfo);
       // console.log(this.props.planeArray);
+      console.log(this.props.othersPlaneArray);
+      console.log(this.props.userInfo.myPlanesData);
       const position=[this.state.lat, this.state.lng]
       return (
         <Map className="map" center={position} zoom={this.state.zoom}>
@@ -122,7 +124,7 @@ class OurMap extends Component {
             >
             {this.props.userInfo.usersPlanesIds.length > 0 ?
             <Tooltip direction="bottom" >
-            {this.props.userInfo.usersPlanesIds.map(myPlane => (myPlane === plane[0] ? <p key={myPlane}>hello</p> : ""))}
+            {plane[17].map(users => (<p key={users}>{users}</p>))}
             </Tooltip> : null }
 
               <Popup>
@@ -137,6 +139,31 @@ class OurMap extends Component {
               </Popup>
             </Marker>
           ))}
+          {this.props.othersPlaneArray ? this.props.othersPlaneArray.map(plane => (
+            <Marker
+              key={plane}
+              position={[plane[6],plane[5]]}
+              icon={redIcon}
+              rotationAngle={plane[10]-45}
+              >
+              <Tooltip direction="bottom" >
+              {this.props.othersPlaneArray.map(myPlane => (myPlane[0] === plane[0] ? <p key={myPlane}>{myPlane[17]}</p> : ""))}
+              </Tooltip> : null }
+              <Popup>
+              <div>
+              <ul>
+                <li> icao_ID: {plane[0]}</li>
+                <li> velocity: {plane[9]} m/s</li>
+                <li> direction: {plane[10]}°</li>
+              </ul>
+              </div>
+              {this.props.isLoggedIn ? <button onClick={() => {this.handleMyPlanes(plane[0],this.props.userInfo.userDatabaseID)}}>ADD TO MYTRACKER</button> : <p>LOG IN TO TRACK</p> }
+              </Popup>
+              </Marker>
+          )) : null}
+
+
+          }
         </Map>
       )
 }
