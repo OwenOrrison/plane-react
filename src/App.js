@@ -120,6 +120,8 @@ class App extends Component {
         trackedPlaneArray.push(lastPlane);
       }
     }
+    console.log(trackedPlaneArray.length);
+    console.log(trackedPlaneArray);
 
     //Now iterate through the opensky plane list, and break it up into three arrays:
     let userTrackedPlanes = []; //Planes the the user is tracking.
@@ -143,8 +145,11 @@ class App extends Component {
             otherUsersTrackedPlanes.push(thisPlane);
           }
           isTracked = true;
-          j = trackedPlaneArray.length * 2; //Leave this loop.
           //Improvement: Could remove the plane from trackedPlaneArray
+          trackedPlaneArray.splice(j,1);
+          j = trackedPlaneArray.length * 2; //Leave this loop.
+
+
           //Improvement: trackedPlaneArray is sorted, use divide and conquer instead of for loop
         }
       } //End loop over tracked planes
@@ -152,6 +157,18 @@ class App extends Component {
         leftoverPlanes.push(thisPlane);
       }
     } //End loop over Opensky planes
+
+    console.log(trackedPlaneArray.length);
+    console.log(trackedPlaneArray);
+    let lostPlanes = [];
+    let lostPlanesDeleteIDs = [];
+    for(let i = 0; i < trackedPlaneArray.length; i++) {
+      if(trackedPlaneArray[i].isThisUsers) {
+        lostPlanes.push(trackedPlaneArray[i].icao_id);
+        lostPlanesDeleteIDs.push(trackedPlaneArray[i].deleteID);
+      }
+    }
+
 
     this.setState( (prevState) => {
       return {
@@ -162,7 +179,9 @@ class App extends Component {
           prevState.loggedUserInfo,
           {myPlanesData: userTrackedPlanes,
           usersPlanesIds: userICAOIds,
-          deleteID: userDeleteIDs}
+          deleteID: userDeleteIDs,
+          lostPlanes: lostPlanes,
+          lostPlanesDeleteIDs: lostPlanesDeleteIDs}
         )}
       })
   }; //End parallelAPIs
@@ -293,7 +312,9 @@ class App extends Component {
           userDatabaseID: null,
           usersPlanesIds: [],
           myPlanesData: [],
-          deleteID: []
+          deleteID: [],
+          lostPlanes: [],
+          lostPlanesDeleteIDs: []
         }
       }
     })
@@ -352,15 +373,28 @@ class App extends Component {
   }
 
   handlePlaneDelete(planes){
-    // console.log(planes);
+    let planesDatabaseID;
+    let isLostplane = false;
     let deleteIndex = this.state.loggedUserInfo.usersPlanesIds.indexOf(planes);
+    if (deleteIndex === -1) { //the plane is in lostPlanes
+      deleteIndex = this.state.loggedUserInfo.lostPlanes.indexOf(planes);
+      isLostplane = true;
+      planesDatabaseID = this.state.loggedUserInfo.lostPlanesDeleteIDs[deleteIndex];
+    } else {
+      planesDatabaseID = this.state.loggedUserInfo.deleteID[deleteIndex];
+    }
     // console.log(deleteIndex);
-    fetch(`${this.getBaseURL()}/planes/${this.state.loggedUserInfo.deleteID[deleteIndex]}`,{
+    fetch(`${this.getBaseURL()}/planes/${planesDatabaseID}`,{
       method:"DELETE"
     }).then(this.setState( (prevState) => {
-      prevState.loggedUserInfo.usersPlanesIds.splice(deleteIndex,1)
-      prevState.loggedUserInfo.myPlanesData.splice(deleteIndex,1)
-      prevState.loggedUserInfo.deleteID.splice(deleteIndex,1)
+      if(isLostplane === false){
+        prevState.loggedUserInfo.usersPlanesIds.splice(deleteIndex,1);
+        prevState.loggedUserInfo.myPlanesData.splice(deleteIndex,1);
+        prevState.loggedUserInfo.deleteID.splice(deleteIndex,1);
+      } else {
+        prevState.loggedUserInfo.lostPlanes.splice(deleteIndex,1);
+      }
+
       // console.log(prevState);
       return {
         loggedUserInfo: Object.assign(
