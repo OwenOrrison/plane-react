@@ -118,6 +118,7 @@ class OurMap extends Component {
               key={plane}
               position={[plane[6],plane[5]]}
               icon={blueIcon}
+              rotationAngle={plane[10]-45}
             >
             {this.props.userInfo.usersPlanesIds.length > 0 ?
             <Tooltip direction="bottom" >
