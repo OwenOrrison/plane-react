@@ -6,9 +6,6 @@ import UserForm from './components/UserForm.js'
 import './App.css';
 
 
-
-
-
 class App extends Component {
 
   constructor(props){
@@ -19,8 +16,19 @@ class App extends Component {
     this.handleCreateUser = this.handleCreateUser.bind(this);
     this.handleDeleteUser  =this.handleDeleteUser.bind(this);
     this.handleEditUser = this.handleEditUser.bind(this);
+
     this.handlePlaneDelete = this.handlePlaneDelete.bind(this);
-    this.intervalID=this.intervalID.bind(this)
+    this.handlePlaneArray=this.handlePlaneArray.bind(this);
+
+    this.handleAPICall=this.handleAPICall.bind(this);
+    this.callOpenSkyAPI = this.callOpenSkyAPI.bind(this);
+    this.parallelAPIs = this.parallelAPIs.bind(this);
+    this.callBackendAPI = this.callBackendAPI.bind(this);
+
+    this.intervalID=this.intervalID.bind(this);
+    this.componentDidMount=this.componentDidMount.bind(this);
+
+    this.getBaseURL =this.getBaseURL.bind(this);
 
 
     this.state={
@@ -34,19 +42,9 @@ class App extends Component {
         myPlanesData: []
       }
     }
-    this.handleAPICall=this.handleAPICall.bind(this)
-    this.componentDidMount=this.componentDidMount.bind(this)
-    this.handlePlaneArray=this.handlePlaneArray.bind(this)
 
-    //TESTING ZONE
-
-    this.callOpenSkyAPI = this.callOpenSkyAPI.bind(this);
-    this.parallelAPIs = this.parallelAPIs.bind(this);
-    this.callBackendAPI = this.callBackendAPI.bind(this);
-    this.getBaseURL =this.getBaseURL.bind(this);
-
-    //END TESTING ZONE
   }
+
   handlePlaneArray(planes){
     let newArray=[]
     planes.forEach((planes) =>{
@@ -75,8 +73,8 @@ class App extends Component {
         this.handleAPICall()
       }},10000)
   }
-  //TESTING ZONE
-  //THIS WORKS - DON'T BREAK IT
+
+  //Calls the opensky API and backend, awaits both results, then processess the data into arrays of planes to display based on who is tracking them.
   //The 'async' allows the javascript in the function to use await statements
   parallelAPIs = async function() {
     console.log("Launching Parallel API calls");
@@ -91,7 +89,6 @@ class App extends Component {
 
     //This pauses the script here until each part of this promise has completed a resolve
     await Promise.all([openSkyPromise, backendPromise]);
-
 
     //Plane: {icao_id, deleteID, [trackingUsernames], isThisUsers}
     //Iterates through all tracked planes, and forms a temporary object for storing the relevent data.
@@ -147,14 +144,14 @@ class App extends Component {
           }
           isTracked = true;
           j = trackedPlaneArray.length * 2; //Leave this loop.
+          //Improvement: Could remove the plane from trackedPlaneArray
+          //Improvement: trackedPlaneArray is sorted, use divide and conquer instead of for loop
         }
       } //End loop over tracked planes
       if(isTracked === false) { //Untracked plane.
         leftoverPlanes.push(thisPlane);
       }
-
     } //End loop over Opensky planes
-
 
     this.setState( (prevState) => {
       return {
@@ -168,17 +165,14 @@ class App extends Component {
           deleteID: userDeleteIDs}
         )}
       })
-  };
+  }; //End parallelAPIs
 
   //OpenSky api call - used for the promise
   callOpenSkyAPI(resolution) {
-    // console.log("API CALL");
     fetch('https://opensky-network.org/api/states/all?lamin=45.6272&lomin=-123.1207&lamax=49.2827&lomax=-115.4260').then(data => data.json()).then(jData => {
-      // console.log(jData.states);
       this.setState({
         planeArray: jData.states
       }, () => {
-        // console.log("OpenSky Done");
         resolution("OpenSky Done");
       })
     })
@@ -207,7 +201,6 @@ class App extends Component {
             {allPlaneData: allPlaneData},
           )}
         }, () => {
-          // console.log("Backend Done");
           resolution("Backend Done");
         })
     });
@@ -221,6 +214,36 @@ class App extends Component {
       baseURL = "http://localhost:3000";
     }
     return baseURL;
+  }
+
+  getUsersPlanes() {
+    console.log("GET THE PLANES");
+    fetch(`${this.getBaseURL()}/users/${this.state.loggedUserInfo.userDatabaseID}`, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      }
+    }).then(data => {
+      return data.json();
+    }).then(jData => {
+      let tempUserPlaneId = [];
+      let tempDBID=[];
+      for(let i = 0; i < jData.length; i++) {
+        tempUserPlaneId.push(jData[i].icao_id);
+        tempDBID.push(jData[i].plane_database_id);
+      }
+      this.setState( (prevState) => {
+        return {
+          loggedUserInfo: Object.assign(
+            {},
+            prevState.loggedUserInfo,
+            {usersPlanesIds: tempUserPlaneId},
+            {deleteID: tempDBID}
+          )
+          }
+        })
+    });
   }
 
 
@@ -258,36 +281,6 @@ class App extends Component {
         console.log("INVALID CREDENTIALS");
       }
     })
-  }
-
-  getUsersPlanes() {
-    console.log("GET THE PLANES");
-    fetch(`${this.getBaseURL()}/users/${this.state.loggedUserInfo.userDatabaseID}`, {
-      method: "GET",
-      headers: {
-        'Accept': 'application/json, text/plain, */*',
-        'Content-Type': 'application/json'
-      }
-    }).then(data => {
-      return data.json();
-    }).then(jData => {
-      let tempUserPlaneId = [];
-      let tempDBID=[];
-      for(let i = 0; i < jData.length; i++) {
-        tempUserPlaneId.push(jData[i].icao_id);
-        tempDBID.push(jData[i].plane_database_id);
-      }
-      this.setState( (prevState) => {
-        return {
-          loggedUserInfo: Object.assign(
-            {},
-            prevState.loggedUserInfo,
-            {usersPlanesIds: tempUserPlaneId},
-            {deleteID: tempDBID}
-          )
-          }
-        })
-    });
   }
 
   handleLogOut() {
