@@ -100,7 +100,7 @@ class OurMap extends Component {
             >
             {this.props.userInfo.usersPlanesIds.length > 0 ?
             <Tooltip direction="bottom" >
-            {this.props.userInfo.usersPlanesIds.map(myPlane => (myPlane === plane[0] ? <p key={myPlane}>hello</p> : ""))}
+            {this.props.userInfo.usersPlanesIds.map(myPlane => (myPlane === plane[0] ? <p key={myPlane}>hello</p> : <p>No one is tracking</p>))}
             </Tooltip> : null }
 
               <Popup>
@@ -147,8 +147,8 @@ class OurMap extends Component {
               rotationAngle={plane[10]-45}
               >
               <Tooltip direction="bottom" >
-              {this.props.othersPlaneArray.map(myPlane => (myPlane[0] === plane[0] ? <p key={myPlane}>{myPlane[17]}</p> : ""))}
-              </Tooltip> : null }
+              {this.props.othersPlaneArray.map(myPlane => (myPlane[0] === plane[0] ? <p key={myPlane}>{myPlane[17]}</p> : null))}
+              </Tooltip>
               <Popup>
               <div>
               <ul>

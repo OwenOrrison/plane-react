@@ -27,8 +27,36 @@
 ul{
   list-style: none;
 }
+.grid{
+  display:grid;
+  grid-template-columns: 2fr 1fr;
+  grid-gap: 1em;
+}
+.header{
+  color: white;
+}
+.grid > div{
+  background:#eee;
+  padding: 1em;
+}
+.grid> div:nth-child(odd){
+  background: black;
+}
+.form{
+  display:grid;
+}
+.map{
+  grid-column: 1/4
 
-
+}
+.display{
+  grid-column: 1/4;
+  grid-row: 3/4;
+}
+.credit{
+  padding-top: 5em;
+  bottom: 0
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
