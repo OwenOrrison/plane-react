@@ -175,16 +175,6 @@ class App extends Component {
     });
   }
 
-
-
-
-
-
-
-
-
-
-
   //END TESTING ZONE
 
 
