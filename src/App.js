@@ -112,6 +112,7 @@ class App extends Component {
           isThisUsers: false},
         );
         lastPlane.trackingUsernames.push(allTrackedPlaneData[i].username);
+        // console.log(lastPlane);
         if(allTrackedPlaneData[i].linked_user_id === this.state.loggedUserInfo.userDatabaseID) {
           lastPlane.isThisUsers = true;
         }
@@ -152,7 +153,7 @@ class App extends Component {
         leftoverPlanes.push(thisPlane);
       }
     } //End loop over Opensky planes
-
+    // console.log(userTrackedPlanes);
     this.setState( (prevState) => {
       return {
         othersPlaneArray: otherUsersTrackedPlanes,
