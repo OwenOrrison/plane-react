@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import{ Map, TileLayer, Marker, Popup, Tooltip} from 'react-leaflet';
 import L from 'leaflet'
 import '../App.css';
+import RotatedMarker from '../RotatedMarker.js'
 import airplaneIcon from '../airplane-shape.svg'
 import airplaneBlue from '../Airplane_GA_Blue.svg'
 import airplaneRed from '../Airplane_GA_Red.svg'
@@ -89,10 +90,11 @@ class OurMap extends Component {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           {this.props.planeArray.map(plane => (
-            <Marker
+            <RotatedMarker
               key={plane}
               position={[plane[6],plane[5]]}
               icon={blackIcon}
+              rotationAngle={plane[10]-45}
             >
             {this.props.userInfo.usersPlanesIds.length > 0 ?
             <Tooltip direction="bottom" >
@@ -109,7 +111,7 @@ class OurMap extends Component {
               </div>
               {this.props.isLoggedIn ? <button onClick={() => {this.handleMyPlanes(plane[0],this.props.userInfo.userDatabaseID)}}>ADD TO MYTRACKER</button> : <p>LOG IN TO TRACK</p> }
               </Popup>
-            </Marker>
+            </RotatedMarker>
           ))}
           {this.props.userInfo.myPlanesData.map(plane => (
             <Marker
