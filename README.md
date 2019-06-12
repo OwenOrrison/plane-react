@@ -5,8 +5,8 @@ https://github.com/ShererStress/
 ## Inclined Plane
 
 ## Technologies Used:
-Javascript, HTML, CSS, Ruby, Rails, React, NPM
-Leaflet
+Javascript, HTML, CSS, Ruby, Rails, React, NPM</br>
+Leaflet</br>
 API datasource: Opensky-network: https://opensky-network.org/
 
 ## Link to Working pProject
