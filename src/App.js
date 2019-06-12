@@ -394,6 +394,7 @@ class App extends Component {
         prevState.loggedUserInfo.deleteID.splice(deleteIndex,1);
       } else {
         prevState.loggedUserInfo.lostPlanes.splice(deleteIndex,1);
+        prevState.loggedUserInfo.lostPlanesDeleteIDs.splice(deleteIndex,1);
       }
 
       // console.log(prevState);
