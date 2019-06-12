@@ -31,7 +31,7 @@ class Display extends Component{
       <ul>
       {this.props.loggedUserInfo.lostPlanes ? this.props.loggedUserInfo.lostPlanes.map(planes => (
           <li key={planes}>{planes}<button onClick={()=>this.props.handlePlaneDelete(planes)}>X</button></li>
-      ))}  : null}
+      )) : null}
       </ul></div>
       : null }
       </div>
