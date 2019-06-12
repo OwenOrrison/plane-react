@@ -100,7 +100,7 @@ class OurMap extends Component {
             >
             {this.props.userInfo.usersPlanesIds.length > 0 ?
             <div>
-            {this.props.userInfo.usersPlanesIds.map(myPlane => (myPlane === plane[0] ? <Tooltip direction="bottom" > <p key={myPlane}>hello</p> </Tooltip>: null))}
+            {this.props.userInfo.usersPlanesIds.map(myPlane => (myPlane === plane[0] ? <Tooltip direction="bottom" key={myPlane}> <p key={myPlane}>hello</p> </Tooltip>: null))}
               </div>
              : null }
 
