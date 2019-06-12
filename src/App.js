@@ -77,7 +77,7 @@ class App extends Component {
         this.parallelAPIs();
       }else{
         this.handleAPICall()
-      }},10000)
+      }},5000)
   }
 
   //Calls the opensky API and backend, awaits both results, then processess the data into arrays of planes to display based on who is tracking them.
