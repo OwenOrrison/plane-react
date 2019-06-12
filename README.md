@@ -4,7 +4,7 @@ https://github.com/ShererStress/
 
 ## Inclined Plane
 Technology:
-React.js
+React.js | 
 Ruby on Rails
 
 Why we chose this project:
