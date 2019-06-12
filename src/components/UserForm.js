@@ -110,7 +110,7 @@ class UserForm extends Component {
 
         <div className="nav">
         {this.props.isLoggedIn ?
-          <div>
+          <div className="buttons">
           <button className="navButton" onClick={() => {this.setDisplayType("editUser", true, false)}}> Edit Account Details </button>
           <button className="navButton" onClick={() => {this.setDisplayType("deleteUser", false, true)}}> Delete User Account </button>
           <button className="navButton" onClick={() => {this.setDisplayType("logOut", false, true)}}> Log Out </button>

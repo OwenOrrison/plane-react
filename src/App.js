@@ -410,8 +410,11 @@ class App extends Component {
 
   render(){
       return (
-        <div>
+        <div className ="grid">
+        <div className="header">
         <h1>Inclined Plane™</h1>
+        </div>
+        <div className="form">
           <UserForm handleLogIn={this.handleLogIn}
           handleLogOut={this.handleLogOut}
           handleCreateUser={this.handleCreateUser}
@@ -419,7 +422,8 @@ class App extends Component {
           handleEditUser={this.handleEditUser}
           isLoggedIn={this.state.isLoggedIn}
           loggedUserInfo={this.state.loggedUserInfo}/>
-          <div>
+          </div>
+          <div className="map">
           <OurMap
           othersPlaneArray={this.state.othersPlaneArray}
           planeArray={this.state.planeArray}
@@ -427,7 +431,7 @@ class App extends Component {
           isLoggedIn={this.state.isLoggedIn}
           />
           </div>
-          <div>
+          <div className="display">
           <Display
           isLoggedIn={this.state.isLoggedIn}
           loggedUserInfo={this.state.loggedUserInfo}
