@@ -46,14 +46,14 @@ class OurMap extends Component {
   }
 
   getBaseURL() {
-    let baseURL
-    if(process.env["IS_ON_HEROKU"]) {
-      baseURL = "https://whispering-mesa-41107.herokuapp.com";
-      console.log("AAA");
-    } else {
-      baseURL = "http://localhost:3000";
-      console.log("AAA");
-    }
+    let baseURL = "https://whispering-mesa-41107.herokuapp.com";
+    // if(process.env["IS_ON_HEROKU"]) {
+    //   baseURL = "https://whispering-mesa-41107.herokuapp.com";
+    //   console.log("AAA");
+    // } else {
+    //   baseURL = "http://localhost:3000";
+    //   console.log("AAA");
+    // }
     return baseURL;
   }
 

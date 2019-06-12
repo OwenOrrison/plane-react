@@ -227,12 +227,12 @@ class App extends Component {
   }
 
   getBaseURL() {
-    let baseURL
-    if(process.env["IS_ON_HEROKU"]) {
-      baseURL = "https://whispering-mesa-41107.herokuapp.com";
-    } else {
-      baseURL = "http://localhost:3000";
-    }
+    let baseURL = "https://whispering-mesa-41107.herokuapp.com";
+    // if(process.env["IS_ON_HEROKU"]) {
+    //   baseURL  = "https://whispering-mesa-41107.herokuapp.com";
+    // } else {
+    //   baseURL = "http://localhost:3000";
+    // }
     return baseURL;
   }
 
