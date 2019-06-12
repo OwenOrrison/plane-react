@@ -18,7 +18,8 @@ class Display extends Component{
     return(
       <div>
       {this.props.isLoggedIn ?
-      <div>{this.props.loggedUserInfo.username}
+      <div>
+      <h1>{this.props.loggedUserInfo.username}</h1>
       <h3>Planes you are tracking:</h3>
       <ul>
       {this.props.loggedUserInfo.usersPlanesIds.map(planes => (
