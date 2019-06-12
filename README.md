@@ -1,68 +1,29 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Colaborators:
+Ryan Whitehill
+https://github.com/ShererStress/
 
-## Available Scripts
+## Inclined Plane
+Technology:
+React.js
+Ruby on Rails
 
-In the project directory, you can run:
+Why we chose this project:
+Ryan and I were both tired of working on projects that were based around a check-out cart or dynamically updating a check-list. During our brainstorming session we decided that we wanted to solve a puzzle. We discussed potential projects such as real time stock updates displayed in a user-friendly way and others. We started this project wanting to be able to track live flight data with interactive display. Having worked on maps in a previous project, I was excited to integrate that past knowledge into react. We started with a basic outline and set up a task tracker.
 
-### `npm start`
+Front-end Process:
+As Ryan worked on setting up the back-end, I worked on setting up the structure of our app and implementing an interactive map through leaflet.js imported through react-leaflet.js. Having struggling through the doccumentation in an earlier project, importing the map with react felt significantly easier. After installing through npm, the process for setting up a basic map is straightforward. Gathering the live flight data was accomplished through an api call to opensky-network(https://opensky-network.org/api/). 
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+I configured the data to generate markers that were placed with the live data longitude and latitude. Now that the back-end allowed for users to save plane data, I was able to set state to reflect different groupings of planes. In conjunction with the map, users would be able to track planes and see what planes were being tracked by other users. Users are also able to stop tracking flights as well as being prompted on when planes have fallen out of the api call (usually on landing or going out of our geographically defined api call).
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+Once we had our app functioning properly (wishlist for future improvements still to come) I styled the app using CSS grid. I found that using grid was a much more efficient and predictable way to style compared with flexbox or float. 
 
-### `npm test`
+Wishlist:
+Toggle on the map to show all api results vs just user tracked planes.
+Graphs of historical data for analysis.
+Animations that predict marker movement between rerender.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Link to working project
+https://mighty-stream-87461.herokuapp.com/
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+## Back-end Counter Part
+https://github.com/ShererStress/project_four_rails
