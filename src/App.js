@@ -39,7 +39,13 @@ class App extends Component {
         username: "",
         userDatabaseID: null,
         usersPlanesIds: [], //make sure that we add planes back on log in.
-        myPlanesData: []
+        myPlanesData: [],
+        lostPlanes: [],
+        lostPlanesDeleteIDs: [],
+        allPlaneData: [],
+        deleteID: [],
+
+
       }
     }
 
