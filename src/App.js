@@ -295,7 +295,9 @@ class App extends Component {
               username: jData.username,
               userDatabaseID: jData.id,
               usersPlanesIds: [],
-              myPlanesData: []
+              myPlanesData: [],
+              lostPlanes: [],
+              lostPlanesDeleteIDs: [],
             }
           }
         })
