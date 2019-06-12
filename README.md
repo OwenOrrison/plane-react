@@ -3,11 +3,13 @@ Ryan Whitehill
 https://github.com/ShererStress/
 
 ## Inclined Plane
-Technology:
-React.js | 
-Ruby on Rails
 
-## Link to working project
+## Technologies Used:
+Javascript, HTML, CSS, Ruby, Rails, React, NPM
+Leaflet
+API datasource: Opensky-network: https://opensky-network.org/
+
+## Link to Working pProject
 https://mighty-stream-87461.herokuapp.com/
 
 ## Back-end Counter Part
@@ -56,7 +58,4 @@ Graphs of historical data for analysis.
 Animations that predict marker movement between rerender.
 Connecting users via socket.io (or something similar) to reduce the number of Opensky API calls
 
-Technologies used:
-Javascript, HTML, CSS, Ruby, Rails, React, NPM
-Leaflet
-API datasource: Opensky-network: https://opensky-network.org/
+
